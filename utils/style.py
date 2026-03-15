@@ -44,12 +44,12 @@ def load_css():
     /* Compact buttons */
     div.stButton > button {
         width: 100%;
-        min-height: 32px;
+        min-height: 26px;
         font-size: 0.9rem;
         font-weight: 600;
         border-radius: 6px;
         border: 2px solid var(--primary-color);
-        padding: 4px 8px;
+        padding: 3px 8px;
         margin: 4px 0;
     }
 
@@ -62,14 +62,14 @@ def load_css():
     /* Form submit button */
     .stFormSubmitButton > button {
         width: 100%;
-        min-height: 32px;
+        min-height: 26px;
         font-size: 0.9rem;
         font-weight: 600;
         border-radius: 6px;
         border: none;
         background: var(--primary-color);
         color: white;
-        padding: 4px 8px;
+        padding: 3px 8px;
         margin: 4px 0;
     }
 
@@ -110,7 +110,7 @@ def load_css():
     @media (max-width: 768px) {
         div.stButton > button, .stFormSubmitButton > button {
             font-size: 0.85rem;
-            min-height: 28px;
+            min-height: 22px;
         }
     }
     </style>
