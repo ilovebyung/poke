@@ -123,7 +123,7 @@ def display_dashboard():
     st.subheader("🛍️ Manage Products, Categories, and Modifiers") 
     load_css()
     # Category Management
-    with st.expander("📁 Category Management", expanded=True):
+    with st.expander("📁 Category Management", expanded=False):
         col1, col2 = st.columns([2, 1])
         
         with col1:
