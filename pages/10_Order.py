@@ -123,10 +123,12 @@ def create_order():
     cursor = conn.cursor()
 
     try:
+        subtotal = sum(item['price'] * item['quantity'] for item in st.session_state.cart)
+
         cursor.execute('''
-            INSERT INTO Order_Cart (service_area_id, order_status, username, provided_name, note)
-            VALUES (0, 10, ?, ?, ?)
-        ''', (st.session_state.get('username'), st.session_state.provided_name, st.session_state.note))
+            INSERT INTO Order_Cart (service_area_id, order_status, username, provided_name, note, subtotal, total)
+            VALUES (0, 10, ?, ?, ?, ?, ?)
+        ''', (st.session_state.get('username'), st.session_state.provided_name, st.session_state.note, subtotal, subtotal))
         order_id = cursor.lastrowid
         st.session_state.order_id = order_id
 
