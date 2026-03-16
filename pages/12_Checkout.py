@@ -71,12 +71,13 @@ def show_checkout_page():
     initialize_session_state()
 
     col1, col2, col3 = st.columns([3, 1, 1])
-    
+ 
     with col1:
+        # with st.container(height=500, border=True):   
         order_data = get_order_details()
         
         if not order_data:
-            st.info("No items in Menu.")
+            st.info("No items in cart.")
             if st.button("Return to Order"):
                 st.switch_page("pages/10_Order.py")
             return
@@ -112,38 +113,39 @@ def show_checkout_page():
         hcol2.write("**Qty**")
         hcol3.write("**Price**")
         hcol4.write("**Total**")
-        st.markdown("---")
+        # st.markdown("---")
 
-        for order_id, items in orders.items():
-            # Order-level subheader with 🗑️ button
-            hdr_col1, hdr_col2 = st.columns([9, 0.9])
-            with hdr_col1:
-                st.subheader(f'Order: {order_id}')
-            if hdr_col2.button(" 🗑️ ", key=f"remove_order_{order_id}"):
-                if remove_item_from_db(order_id):
-                    st.rerun()
+        with st.container(height=500, border=True):  
+            for order_id, items in orders.items():
+                # Order-level subheader with 🗑️ button
+                hdr_col1, hdr_col2 = st.columns([9, 0.9])
+                with hdr_col1:
+                    st.subheader(f'Order: {order_id}')
+                if hdr_col2.button(" 🗑️ ", key=f"remove_order_{order_id}"):
+                    if remove_item_from_db(order_id):
+                        st.rerun()
 
-            for idx, item in enumerate(items):
-                icol1, icol2, icol3, icol4 = st.columns([3, 1, 1, 1])
-                
-                # Column 1: Description + Modifiers
-                with icol1:
-                    st.write(f"**{item['description']}**")
-                    if item['modifiers']:
-                        for mod in item['modifiers']:
-                            st.caption(f"└─ {mod['description']} (+{format_price(mod['price'])})")
-                
-                # Column 2: Quantity
-                icol2.write(f"{item['quantity']}")
-                
-                # Column 3: Unit Price
-                icol3.write(format_price(item['base_price'] + item['modifier_total']))
-                
-                # Column 4: Item Total
-                icol4.write(format_price(item['item_total']))
+                for idx, item in enumerate(items):
+                    icol1, icol2, icol3, icol4 = st.columns([3, 1, 1, 1])
+                    
+                    # Column 1: Description + Modifiers
+                    with icol1:
+                        st.write(f"**{item['description']}**")
+                        if item['modifiers']:
+                            for mod in item['modifiers']:
+                                st.caption(f"└─ {mod['description']} (+{format_price(mod['price'])})")
+                    
+                    # Column 2: Quantity
+                    icol2.write(f"{item['quantity']}")
+                    
+                    # Column 3: Unit Price
+                    icol3.write(format_price(item['base_price'] + item['modifier_total']))
+                    
+                    # Column 4: Item Total
+                    icol4.write(format_price(item['item_total']))
 
-        st.markdown("---")
-        
+            # st.markdown("---")
+            
         # Payment Summary Section    
         TAX = 175  # $1.75
         payment_items = [("Subtotal", subtotal), ("Tax", TAX)]
@@ -155,11 +157,11 @@ def show_checkout_page():
                 <span>{format_price(amount)}</span>
             </div>
             """, unsafe_allow_html=True)
-    
-    # Logic for Remaining Balance and Pad
-    if 'orders' in locals() and orders:
-        balance_due = subtotal + TAX
-        remaining_balance = balance_due - st.session_state.amount_tendered
+        
+        # Logic for Remaining Balance and Pad
+        if 'orders' in locals() and orders:
+            balance_due = subtotal + TAX
+            remaining_balance = balance_due - st.session_state.amount_tendered
         
         with col2:
             st.markdown(f"""

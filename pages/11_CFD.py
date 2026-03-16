@@ -2,9 +2,12 @@ import streamlit as st
 import pandas as pd
 from utils.util import format_price
 from utils.database import get_order_details, get_modifiers_details
+from utils.style import load_css
 from streamlit_autorefresh import st_autorefresh
 
 def display_order_summary():
+    st.set_page_config(page_title="CFD", page_icon="🗒", layout="wide", initial_sidebar_state="collapsed")
+    load_css()
     # Fetch order data from the database
     order_data = get_order_details()
     
@@ -84,11 +87,13 @@ def display_order_summary():
 
     if table_data:  # Only if we have data
         df = pd.DataFrame(table_data)
-        st.table(df.set_index(df.columns[0]))  
+        with st.container(height=500, border=True):  
+            st.table(df.set_index(df.columns[0]))  
         st.markdown(f"**Subtotal: {format_price(subtotal)}**")
     else:
         st.info("No items to display in the order.")
 
 if __name__ == "__main__":
+    # Page layout
     st_autorefresh(interval=1000, limit=None, key="refresh")
     display_order_summary()
