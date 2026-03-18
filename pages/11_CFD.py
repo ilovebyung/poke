@@ -89,7 +89,7 @@ def display_order_summary():
     if table_data:
         df = pd.DataFrame(table_data)
         with st.container(height=500, border=True):
-            st.table(df.set_index(df.columns[0]))
+            st.dataframe(df.set_index(df.columns[0]), use_container_width=True)
 
         # Summary: Subtotal → Tax → Total
         display_tax_rate = orders[list(orders.keys())[-1]][-1]['tax_rate']
