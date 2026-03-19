@@ -212,7 +212,7 @@ def show_order_page():
     with col_cart:
         # st.subheader("Orders")
 
-        with st.container(height=400, border=True):
+        with st.container(height=420, border=True):
             if st.session_state.cart:
                 for i, item in enumerate(st.session_state.cart):
                     with st.container():
@@ -263,7 +263,8 @@ def show_order_page():
             st.session_state.note = st.text_input("Special request? 👋")
 
         subtotal = calculate_subtotal()
-        st.subheader(f"Subtotal: {format_price(subtotal)}")
+        # st.subheader(f"Subtotal: {format_price(subtotal)}")
+        st.write(f"Subtotal: {format_price(subtotal)}")
 
         checkout_disabled = len(st.session_state.cart) == 0
         if st.button("Checkout", type="primary", use_container_width=True, disabled=checkout_disabled):
