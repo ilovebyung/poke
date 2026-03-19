@@ -210,7 +210,7 @@ def show_order_page():
 
     # Left column – Cart
     with col_cart:
-        st.subheader("Orders")
+        # st.subheader("Orders")
 
         with st.container(height=400, border=True):
             if st.session_state.cart:
@@ -274,7 +274,7 @@ def show_order_page():
 
     # Right column – Menu
     with col_menu:
-        st.subheader("Menu")
+        # st.subheader("Menu")
 
         with st.container(height=600, border=True):  
 
