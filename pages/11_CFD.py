@@ -1,108 +1,60 @@
 import streamlit as st
 import pandas as pd
 from utils.util import format_price
-from utils.database import get_order_details, get_modifiers_details
+from utils.database import get_db_connection
 from utils.style import load_css
 from streamlit_autorefresh import st_autorefresh
 
-def display_order_summary():
-    st.set_page_config(page_title="CFD", page_icon="🗒", layout="wide", initial_sidebar_state="collapsed")
+def get_live_cart_data():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT product_name, modifiers_text, quantity, unit_price, total_price FROM Live_Cart")
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
+def display_cfd():
+    st.set_page_config(page_title="Customer Display", page_icon="🗒", layout="wide")
     load_css()
 
-    # Fetch order data from the database
-    order_data = get_order_details()
-
-    if not order_data:
-        st.warning("No active order found.")
+    rows = get_live_cart_data()
+    
+    if not rows:
+        st.info("Welcome! Please start your order.")
         return
 
-    # Data structures to hold processed information
-    orders = {}
+    table_data = []
     subtotal = 0
-    tax_amount = 0
+    
+    for row in rows:
+        name, mods, qty, unit_p, total_p = row
+        description = name
+        if mods:
+            description += f"\n  └─ {mods}"
+            
+        table_data.append({
+            "Item": description,
+            "Qty": qty,
+            "Price": format_price(total_p)
+        })
+        subtotal += total_p
 
-    # Process order data with modifiers
-    for row in order_data:
-        order_id = row['order_id']
-        if order_id not in orders:
-            orders[order_id] = []
-
-        if row['product_id']:
-            # Get modifiers for this specific product
-            modifiers = get_modifiers_details(row['modifiers'])
-
-            # Calculate total modifier price
-            modifier_total_price = sum(mod['price'] for mod in modifiers)
-
-            # Item total = (product price + all modifier prices) * quantity
-            item_total = (row['product_price'] + modifier_total_price) * row['product_quantity']
-
-            # Tax rate from Product table (stored as a percentage, e.g. 4.712 means 4.712%)
-            try:
-                tax_rate = row['tax'] if row['tax'] is not None else 4.712
-            except (KeyError, IndexError):
-                tax_rate = 4.712
-            item_tax = item_total * (tax_rate / 100)
-
-            orders[order_id].append({
-                'description': row['product_description'],
-                'quantity': row['product_quantity'],
-                'base_price': row['product_price'],
-                'modifiers': modifiers,
-                'modifier_total': modifier_total_price,
-                'item_total': item_total,
-                'tax_rate': tax_rate,
-                'item_tax': item_tax
-            })
-
-            subtotal += item_total
-            tax_amount += item_tax
-
-    # Total = Subtotal + Tax
+    # Calculations
+    tax_rate = 4.712
+    tax_amount = subtotal * (tax_rate / 100)
     total = subtotal + tax_amount
 
-    # Display the Order IDs
-    st.subheader(f'Order: {", ".join(str(k) for k in orders.keys())}')
+    st.subheader("Current Order")
+    df = pd.DataFrame(table_data)
+    st.table(df) # Static table looks better for customers
 
-    # Prepare detailed table data for the UI
-    table_data = []
-
-    for order_id, items in orders.items():
-        for item in items:
-            description = item['description']
-
-            # Append modifier details to the description string if they exist
-            if item['modifiers']:
-                modifier_text = ", ".join([
-                    f"{mod['description']} (+{format_price(mod['price'])})"
-                    for mod in item['modifiers']
-                ])
-                description += f"\n  └─ {modifier_text}"
-
-            table_data.append({
-                "Description": description,
-                "Quantity": item['quantity'],
-                "Unit Price": format_price(item['base_price'] + item['modifier_total']),
-                "Price": format_price(item['item_total'])
-            })
-
-    if table_data:
-        df = pd.DataFrame(table_data)
-        with st.container(height=500, border=True):
-            st.dataframe(df.set_index(df.columns[0]), use_container_width=True)
-
-        # Summary: Subtotal → Tax → Total
-        display_tax_rate = orders[list(orders.keys())[-1]][-1]['tax_rate']
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.markdown(f"**Subtotal: {format_price(subtotal)}**")
-        with col2:
-            st.markdown(f"**Tax ({display_tax_rate:.3f}%): {format_price(tax_amount)}**")
-        with col3:
-            st.markdown(f"**Total: {format_price(total)}**")
-    else:
-        st.info("No items to display in the order.")
+    st.divider()
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Subtotal", format_price(subtotal))
+    c2.metric(f"Tax ({tax_rate}%)", format_price(tax_amount))
+    c3.subheader(f"Total: {format_price(total)}")
 
 if __name__ == "__main__":
-    st_autorefresh(interval=1000, limit=None, key="refresh")
-    display_order_summary()
+    # Refresh every 1 second to make it feel "live"
+    st_autorefresh(interval=1000, key="cfd_refresh")
+    display_cfd()
