@@ -7,7 +7,7 @@ from utils.database import  get_db_connection
 from utils.style import load_css 
 
 # Page configuration
-st.set_page_config(page_title="Transaction History", page_icon="📑", layout="wide")
+st.set_page_config(page_title="Order History", page_icon="📑", layout="wide")
 
 def get_transaction_data(start_date, end_date):
     """Fetch transaction data for the selected date range"""
@@ -25,7 +25,7 @@ def get_transaction_data(start_date, end_date):
                 WHEN 11 THEN 'order paid & printed'
                 WHEN 12 THEN 'order confirmed by kitchen'
                 WHEN 13 THEN 'order delivered'
-                WHEN 33 THEN 'dummy order'
+                -- WHEN 33 THEN 'dummy order'
                 ELSE 'other'
             END AS order_status,
             oh.username,

@@ -168,8 +168,7 @@ def show_checkout_page():
     with col2:
         with st.container(height=500, border=True):
             st.markdown(f"""
-            <div class="balance-header">Remaining Balance</div>
-            <div class="balance-amount">{format_price(remaining_balance)}</div>            
+            <div class="balance-header">Remaining Balance {format_price(remaining_balance)}</div>
             """, unsafe_allow_html=True)
 
             st.write(f"**Current input:** ${st.session_state.current_input if st.session_state.current_input else '0'}")

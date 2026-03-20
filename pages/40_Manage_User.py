@@ -111,7 +111,7 @@ if 'editing_user' in st.session_state:
         # new_roles = st.text_input("Roles", value=current_user.get('roles', 'cashier'))
         new_roles = st.selectbox(
             "Roles",
-            ("cashier", "manager", "admin", "KDS", "COD"),
+            ("cashier", "manager"),
         )
 
         col1, col2 = st.columns(2)
