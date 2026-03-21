@@ -28,17 +28,6 @@ def sync_live_cart():
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        # Create table if it doesn't exist (Temporary bridge)
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Live_Cart (
-                product_name TEXT,
-                modifiers_text TEXT,
-                quantity INTEGER,
-                unit_price REAL,
-                total_price REAL
-            )
-        ''')
-        
         # Flush the table for the new state
         cursor.execute("DELETE FROM Live_Cart")
         
