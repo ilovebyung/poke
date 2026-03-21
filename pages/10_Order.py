@@ -219,11 +219,11 @@ def show_modifier_dialog():
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Cancel", use_container_width=True):
+        if st.button("Cancel", width='stretch'):
             st.session_state.selected_product = None
             st.rerun()
     with col2:
-        if st.button("Add to Menu", type="primary", use_container_width=True):
+        if st.button("Add to Menu", type="primary", width='stretch'):
             selected_modifiers = []
             if modifier_groups:
                 for type_id, group_data in modifier_groups.items():
@@ -287,7 +287,7 @@ def show_order_page():
 
         st.write(f"Subtotal: {format_price(calculate_subtotal())}")
 
-        if st.button("Checkout", type="primary", use_container_width=True, disabled=(not st.session_state.cart)):
+        if st.button("Checkout", type="primary", width='stretch', disabled=(not st.session_state.cart)):
             if create_order():
                 st.success("Order created!")
                 st.switch_page("pages/12_Checkout.py")
@@ -304,7 +304,7 @@ def show_order_page():
                         cols = st.columns(3)
                         for idx, (p_id, p_name, p_price) in enumerate(product_items):
                             with cols[idx % 3]:
-                                if st.button(f"{p_name}\n{format_price(p_price)}", key=f"btn_{p_id}", use_container_width=True):
+                                if st.button(f"{p_name}\n{format_price(p_price)}", key=f"btn_{p_id}", width='stretch'):
                                     st.session_state.selected_product = {'product_id': p_id, 'product_name': p_name, 'price': p_price}
                                     if group_id == 1:
                                         show_modifier_dialog()

@@ -159,7 +159,7 @@ def display_order_with_checkboxes(order, items):
         }
         </style>
         """, unsafe_allow_html=True)
-    if st.button(button_text, key=f"confirm_{order['order_id']}", disabled=button_disabled, use_container_width=True, type=button_type):
+    if st.button(button_text, key=f"confirm_{order['order_id']}", disabled=button_disabled, width='stretch', type=button_type):
         if confirm_order(order['order_id']):
             st.success(f"Order {order['order_id']} confirmed!")
             st.rerun()

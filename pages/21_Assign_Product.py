@@ -78,7 +78,7 @@ with col1:
             if st.button(
                 f"**{category['description']}**",
                 key=f"cat_{category['category_id']}",
-                use_container_width=True,
+                width='stretch',
                 type="primary" if st.session_state.selected_category == category['category_id'] else "secondary"
             ):
                 st.session_state.selected_category = category['category_id']

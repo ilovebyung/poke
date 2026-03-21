@@ -177,7 +177,7 @@ def _display_from_order_details(order_data):
     if table_data:
         df = pd.DataFrame(table_data)
         with st.container(height=500, border=True):
-            st.dataframe(df.set_index(df.columns[0]), use_container_width=True)
+            st.dataframe(df.set_index(df.columns[0]), width='stretch')
 
         display_tax_rate = orders[list(orders.keys())[-1]][-1]["tax_rate"]
         col1, col2, col3 = st.columns(3)

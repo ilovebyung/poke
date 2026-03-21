@@ -88,7 +88,7 @@ def display_order(order, items):
         # st.markdown(f"### Order: {order['order_id']} &nbsp; {order['provided_name']}")
     
     # Show confirm button
-    if st.button("Confirm Delivery", key=f"confirm_{order['order_id']}", use_container_width=True):
+    if st.button("Confirm Delivery", key=f"confirm_{order['order_id']}", width='stretch'):
         if confirm_order(order['order_id']):
             st.success(f"Order {order['order_id']} confirmed!")
             st.rerun()

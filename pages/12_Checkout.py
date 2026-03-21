@@ -188,27 +188,27 @@ def show_checkout_page():
             for row in [["7","8","9"], ["4","5","6"], ["1","2","3"]]:
                 cols = st.columns(3)
                 for i, num in enumerate(row):
-                    if cols[i].button(num, key=f"calc_{num}", use_container_width=True):
+                    if cols[i].button(num, key=f"calc_{num}", width='stretch'):
                         handle_calculator_input(num)
                         st.rerun()
 
             c1, c2, c3 = st.columns(3)
-            if c1.button("0", key="calc_0", use_container_width=True):
+            if c1.button("0", key="calc_0", width='stretch'):
                 handle_calculator_input("0"); st.rerun()
-            if c2.button(".", key="calc_.", use_container_width=True):
+            if c2.button(".", key="calc_.", width='stretch'):
                 handle_calculator_input("."); st.rerun()
-            if c3.button("Del", key="calc_delete", use_container_width=True):
+            if c3.button("Del", key="calc_delete", width='stretch'):
                 handle_calculator_input("delete"); st.rerun()
 
-        if st.button("Enter", key="calc_enter", use_container_width=True, type="primary"):
+        if st.button("Enter", key="calc_enter", width='stretch', type="primary"):
             handle_calculator_input("enter")
             st.rerun()
 
     with col3:
         with st.container(height=500, border=True):
             st.markdown("### Payment Type")
-            st.button("Credit", key="credit", use_container_width=True)
-            st.button("Cash", key="cash", use_container_width=True)
+            st.button("Credit", key="credit", width='stretch')
+            st.button("Cash", key="cash", width='stretch')
 
             st.markdown("---")
             st.markdown("### Split Evenly")
@@ -239,7 +239,7 @@ def show_checkout_page():
 
             st.markdown("---")
 
-        if st.button("Settle", key="settle", use_container_width=True, type="primary"):
+        if st.button("Settle", key="settle", width='stretch', type="primary"):
             if settle_order(list(orders.keys()), balance_due):
                 clear_live_cart_data()
                 st.session_state.amount_tendered = 0
@@ -248,7 +248,7 @@ def show_checkout_page():
                 st.success("Order settled!")
                 st.switch_page("pages/10_Order.py")
 
-        if st.button("Print Receipt", key="receipt", use_container_width=True):
+        if st.button("Print Receipt", key="receipt", width='stretch'):
             if print_receipt(orders, subtotal, tax_amount):
                 st.success("Printing...")
 

@@ -86,7 +86,7 @@ for idx, pid in enumerate(order):
                 st.rerun()
 
 st.divider()
-if st.button("💾 Save Ranks", use_container_width=True):
+if st.button("💾 Save Ranks", width='stretch'):
     updates = [(rank+1, pid) for rank, pid in enumerate(order)]
     bulk_update_ranks(updates)
     st.success("✅ Ranks saved!")
