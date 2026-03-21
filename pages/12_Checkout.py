@@ -65,6 +65,17 @@ def initialize_session_state():
     if 'split_count' not in st.session_state:
         st.session_state.split_count = 1
 
+def clear_live_cart_data():
+    """Clear all rows from Live_Cart."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM Live_Cart")
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        st.error(f"Error clearing Live_Cart: {e}")
+
 def show_checkout_page():
     initialize_session_state()
 
@@ -230,6 +241,7 @@ def show_checkout_page():
 
         if st.button("Settle", key="settle", use_container_width=True, type="primary"):
             if settle_order(list(orders.keys()), balance_due):
+                clear_live_cart_data()
                 st.session_state.amount_tendered = 0
                 st.session_state.current_input = ""
                 st.session_state.split_count = 1

@@ -202,20 +202,22 @@ def display_cfd():
     )
     load_css()
 
-    # 1. Try Live_Cart first
-    live_rows = get_live_cart_data()
-    if live_rows:
-        _display_from_live_cart(live_rows)
-        return
+    with st.container(height=600, border=True):
 
-    # 2. Fall back to Order_Cart / Order_Product
-    order_data = get_order_details()
-    if order_data:
-        _display_from_order_details(order_data)
-        return
+        # 1. Try Live_Cart first
+        live_rows = get_live_cart_data()
+        if live_rows:
+            _display_from_live_cart(live_rows)
+            return
 
-    # 3. Nothing to show
-    st.info("Welcome! Please start your order.")
+        # 2. Fall back to Order_Cart / Order_Product
+        order_data = get_order_details()
+        if order_data:
+            _display_from_order_details(order_data)
+            return
+
+        # 3. Nothing to show
+        st.info("Welcome! Please start your order.")
 
 
 if __name__ == "__main__":
