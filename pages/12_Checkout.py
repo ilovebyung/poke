@@ -72,6 +72,24 @@ def set_dummy_price(new_price=0):
     finally:
         conn.close()
 
+def clear_dummy_price():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            UPDATE Product
+            SET price = 0
+            WHERE description = 'dummy'
+        """)
+        conn.commit()
+        st.success(f"Dummy price cleared.")
+        return True
+    except Exception as e:
+        st.error(f"Error clearing dummy price: {e}")
+        return False
+    finally:
+        conn.close()
+
 def handle_calculator_input(value):
     if value == "delete":
         st.session_state.current_input = st.session_state.current_input[:-1]
@@ -282,7 +300,7 @@ def show_checkout_page():
         if st.button("Settle", key="settle", width='stretch', type="primary"):
             if settle_order(list(orders.keys()), balance_due):
                 clear_live_cart_data()
-                set_dummy_price(0)  # Reset dummy price to 0 for next order
+                clear_dummy_price()  # Reset dummy price to 0  
                 st.session_state.amount_tendered = 0
                 st.session_state.current_input = ""
                 st.session_state.split_count = 1
