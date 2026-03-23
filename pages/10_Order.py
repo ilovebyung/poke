@@ -264,7 +264,7 @@ def show_order_page():
                                     mp = f" (+{format_price(mod['price'])})" if mod['price'] > 0 else ""
                                     st.caption(f"• {mod['description']}{mp}")
                         with cart_col2:
-                            d_col, q_col, i_col = st.columns([1, 0.4, 1])
+                            d_col, q_col, i_col = st.columns([1, 0.2, 1])
                             if d_col.button(" ➖ ", key=f"dec_{i}"):
                                 update_quantity(i, -1)
                                 st.rerun()
