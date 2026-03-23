@@ -42,6 +42,36 @@ def settle_order(order_ids, total):
     finally:
         conn.close()
 
+def set_dummy_price():
+    """Update the price of the 'dummy' product with the current input value."""
+    if not st.session_state.current_input:
+        st.warning("Please enter a price first using the number pad.")
+        return False
+    
+    try:
+        new_price = int(float(st.session_state.current_input) * 100)
+    except ValueError:
+        st.error("Invalid price input.")
+        return False
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            UPDATE Product
+            SET price = ?
+            WHERE description = 'dummy'
+        """, (new_price,))
+        conn.commit()
+        st.success(f"Dummy price updated to {format_price(new_price)}")
+        st.session_state.current_input = ""
+        return True
+    except Exception as e:
+        st.error(f"Error setting dummy price: {e}")
+        return False
+    finally:
+        conn.close()
+
 def handle_calculator_input(value):
     if value == "delete":
         st.session_state.current_input = st.session_state.current_input[:-1]
@@ -85,7 +115,7 @@ def show_checkout_page():
         order_data = get_order_details()
 
         if not order_data:
-            st.info("No items in cart.")
+            st.info("No items in menu.")
             if st.button("Return to Order"):
                 st.switch_page("pages/10_Order.py")
             return
@@ -93,6 +123,7 @@ def show_checkout_page():
         orders = {}
         subtotal = 0
         tax_amount = 0
+        has_dummy_item = False  # Track if any dummy item exists
 
         for row in order_data:
             order_id = row['order_id']
@@ -112,6 +143,10 @@ def show_checkout_page():
 
                 item_tax = item_total * (tax_rate / 100)
 
+                is_dummy = str(row['product_description']).strip().lower() == 'dummy'
+                if is_dummy:
+                    has_dummy_item = True
+
                 orders[order_id].append({
                     'order_id': order_id,
                     'description': row['product_description'],
@@ -121,18 +156,13 @@ def show_checkout_page():
                     'modifier_total': modifier_total_price,
                     'item_total': item_total,
                     'tax_rate': tax_rate,
-                    'item_tax': item_tax
+                    'item_tax': item_tax,
+                    'is_dummy': is_dummy
                 })
                 subtotal += item_total
                 tax_amount += item_tax
 
         # --- ITEMS LIST ---
-        # hcol1, hcol2, hcol3, hcol4 = st.columns([3, 1, 1, 1])
-        # hcol1.write("**Description**")
-        # hcol2.write("**Qty**")
-        # hcol3.write("**Price**")
-        # hcol4.write("**Total**")
-
         with st.container(height=500, border=True):
             for order_id, items in orders.items():
                 hdr_col1, hdr_col2 = st.columns([9, 0.9])
@@ -150,6 +180,16 @@ def show_checkout_page():
                         if item['modifiers']:
                             for mod in item['modifiers']:
                                 st.caption(f"└─ {mod['description']} (+{format_price(mod['price'])})")
+
+                        # Show "Set Dummy Price" button inline under the dummy item
+                        if item['is_dummy']:
+                            if st.button(
+                                "💲 Set Dummy Price",
+                                key=f"set_dummy_{order_id}_{idx}",
+                                type="secondary"
+                            ):
+                                if set_dummy_price():
+                                    st.rerun()
 
                     icol2.write(f"{item['quantity']}")
                     icol3.write(format_price(item['base_price'] + item['modifier_total']))
