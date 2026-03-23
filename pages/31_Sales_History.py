@@ -21,8 +21,12 @@ def get_summary_data(start_date, end_date):
         revenue_query = """
         SELECT SUM(total) as total_revenue
         FROM Order_History
-        WHERE DATE(timestamp) BETWEEN ? AND ? AND order_status = 13
+        WHERE DATE(timestamp) BETWEEN ? AND ? AND order_status = 11  
         """
+        # status 11 indicates paid and printed orders, adjust if needed based on your order status definitions
+        # WHEN 10 THEN 'order created'
+        # WHEN 11 THEN 'order paid & printed'
+        # WHEN 12 THEN 'order confirmed by kitchen'
         revenue_result = conn.execute(revenue_query, (start_date, end_date)).fetchone()
         total_revenue = revenue_result[0] or 0
         
@@ -34,7 +38,7 @@ def get_summary_data(start_date, end_date):
             SUM(op.product_quantity) as total_quantity
         FROM Order_History oh
         LEFT JOIN Order_Product op ON oh.order_id = op.order_id
-        WHERE DATE(oh.timestamp) BETWEEN ? AND ? AND oh.order_status = 13
+        WHERE DATE(oh.timestamp) BETWEEN ? AND ? AND oh.order_status = 11
         """
         
         result = conn.execute(query, (start_date, end_date)).fetchone()
@@ -73,7 +77,7 @@ def get_sales_summary_data(start_date, end_date):
         FROM Order_History oh
         INNER JOIN Order_Product op ON oh.order_id = op.order_id
         INNER JOIN Product p ON op.product_id = p.product_id
-        WHERE DATE(oh.timestamp) BETWEEN ? AND ? AND oh.order_status = 13
+        WHERE DATE(oh.timestamp) BETWEEN ? AND ? AND oh.order_status = 11
         GROUP BY p.product_id, p.description, p.price, p.tax
         ORDER BY total_quantity DESC
         """
@@ -126,7 +130,7 @@ if st.sidebar.button("Refresh Data", type="primary"):
     st.cache_data.clear()
 
 # Get and display summary statistics
-st.subheader("Sales Summary Statistics")
+# st.subheader("Sales Summary Statistics")
 summary = get_summary_data(start_date, end_date)
 
 if summary:
@@ -142,7 +146,7 @@ if summary:
         st.metric("Total Revenue", format_price(summary['total_revenue']))
 
 # Get sales summary data
-st.subheader("Product Sales Summary")
+# st.subheader("Product Sales Summary")
 df = get_sales_summary_data(start_date, end_date)
 
 if df.empty:

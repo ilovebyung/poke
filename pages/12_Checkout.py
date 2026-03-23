@@ -42,7 +42,7 @@ def settle_order(order_ids, total):
     finally:
         conn.close()
 
-def set_dummy_price():
+def set_dummy_price(new_price=0):
     """Update the price of the 'dummy' product with the current input value."""
     if not st.session_state.current_input:
         st.warning("Please enter a price first using the number pad.")
@@ -282,6 +282,7 @@ def show_checkout_page():
         if st.button("Settle", key="settle", width='stretch', type="primary"):
             if settle_order(list(orders.keys()), balance_due):
                 clear_live_cart_data()
+                set_dummy_price(0)  # Reset dummy price to 0 for next order
                 st.session_state.amount_tendered = 0
                 st.session_state.current_input = ""
                 st.session_state.split_count = 1

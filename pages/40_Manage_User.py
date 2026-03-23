@@ -21,10 +21,10 @@ def save_credentials(config):
 # Load config
 config = load_credentials()
 
-st.title("User Management System")
+# st.title("User Management System")
 
 # Registration Form
-st.subheader("Add New User")
+st.markdown("### Add New User")
 
 with st.form("add_user_form"):
     username = st.text_input("Username*")
@@ -66,7 +66,7 @@ with st.form("add_user_form"):
 
 # Display existing users
 st.divider()
-st.subheader("Existing Users")
+st.markdown("### Existing Users")
 
 if config['credentials']['usernames']:
     for username, details in config['credentials']['usernames'].items():

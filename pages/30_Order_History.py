@@ -141,7 +141,7 @@ if st.sidebar.button("Refresh Data", type="primary"):
 # st.divider()
 
 # Get transaction data
-st.subheader(" Transaction Details")
+# st.subheader(" Transaction Details")
 df = get_transaction_data(start_date, end_date)
 
 if df.empty:

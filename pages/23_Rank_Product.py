@@ -38,7 +38,7 @@ def bulk_update_ranks(updates: list[tuple]):
 
 
 # ── UI ────────────────────────────────────────────────────────────────────────
-st.title("🏆 Product Rank Manager")
+st.subheader("🏆 Product Rank Manager")
 
 categories = load_categories()
 cat_options = dict(zip(categories["description"], categories["category_id"]))
