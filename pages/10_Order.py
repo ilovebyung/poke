@@ -289,6 +289,8 @@ def show_order_page():
 
         if st.button("Checkout", type="primary", width='stretch', disabled=(not st.session_state.cart)):
             if create_order():
+                st.session_state.provided_name = ''
+                st.session_state.note = ''
                 st.success("Order created!")
                 st.switch_page("pages/12_Checkout.py")
 
