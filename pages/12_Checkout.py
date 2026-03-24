@@ -168,6 +168,7 @@ def show_checkout_page():
                 orders[order_id].append({
                     'order_id': order_id,
                     'description': row['product_description'],
+                    'note': row['note'],
                     'quantity': row['product_quantity'],
                     'base_price': row['product_price'],
                     'modifiers': modifiers,
@@ -201,6 +202,7 @@ def show_checkout_page():
 
                         # Show "Set Dummy Price" button inline under the dummy item
                         if item['is_dummy']:
+                            st.write(f"**{item['note']}**")
                             if st.button(
                                 "💲 Set Dummy Price",
                                 key=f"set_dummy_{order_id}_{idx}",

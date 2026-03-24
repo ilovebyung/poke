@@ -74,6 +74,7 @@ def get_order_details():
         SELECT 
             oc.order_id,
             oc.subtotal,
+            oc.note,                   
             op.product_id,
             op.modifiers,
             pi.description as product_description,

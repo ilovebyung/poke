@@ -256,7 +256,7 @@ def show_order_page():
             if st.session_state.cart:
                 for i, item in enumerate(st.session_state.cart):
                     with st.container():
-                        cart_col1, cart_col2, cart_col3 = st.columns([3, 2, 2])
+                        cart_col1, cart_col2, cart_col3 = st.columns([3, 3, 2])
                         with cart_col1:
                             st.write(f"**{item['product_name']}**")
                             if item['modifiers']:
@@ -264,12 +264,12 @@ def show_order_page():
                                     mp = f" (+{format_price(mod['price'])})" if mod['price'] > 0 else ""
                                     st.caption(f"• {mod['description']}{mp}")
                         with cart_col2:
-                            d_col, q_col, i_col = st.columns([1, 0.2, 1])
-                            if d_col.button(" ➖ ", key=f"dec_{i}"):
+                            d_col, q_col, i_col = st.columns([1, 0.4, 1])
+                            if d_col.button(" 🔻 ", key=f"dec_{i}"):
                                 update_quantity(i, -1)
                                 st.rerun()
                             q_col.markdown(f"<div style='text-align:center;'>{item['quantity']}</div>", unsafe_allow_html=True)
-                            if i_col.button(" ➕ ", key=f"inc_{i}"):
+                            if i_col.button(" 🔺 ", key=f"inc_{i}"):
                                 update_quantity(i, 1)
                                 st.rerun()
                         with cart_col3:
