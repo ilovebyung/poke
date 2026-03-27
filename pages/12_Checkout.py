@@ -186,7 +186,7 @@ def show_checkout_page():
             for order_id, items in orders.items():
                 hdr_col1, hdr_col2 = st.columns([9, 0.9])
                 with hdr_col1:
-                    st.subheader(f'Order: {order_id}')
+                    st.markdown(f"#### Order: {order_id}")
                 if hdr_col2.button(" 🗑️ ", key=f"remove_order_{order_id}"):
                     if remove_item_from_db(order_id):
                         st.rerun()
@@ -243,8 +243,8 @@ def show_checkout_page():
             """, unsafe_allow_html=True)
 
             st.write(f"**Current input:** ${st.session_state.current_input if st.session_state.current_input else '0'}")
-            st.markdown("### Number Pad")
-
+            # st.markdown("### Number Pad")
+            st.markdown("---")
             for row in [["7","8","9"], ["4","5","6"], ["1","2","3"]]:
                 cols = st.columns(3)
                 for i, num in enumerate(row):
@@ -266,12 +266,12 @@ def show_checkout_page():
 
     with col3:
         with st.container(height=500, border=True):
-            st.markdown("### Payment Type")
+            # st.markdown("#### Payment Type")
             st.button("Credit", key="credit", width='stretch')
             st.button("Cash", key="cash", width='stretch')
 
             st.markdown("---")
-            st.markdown("### Split Evenly")
+            st.markdown("#### Split Evenly")
 
             sc_minus, sc_count, sc_plus = st.columns([1, 2, 1])
 
@@ -297,7 +297,7 @@ def show_checkout_page():
                 for i, amount in enumerate(split_amounts):
                     st.caption(f"Person {i+1}: {format_price(amount)}")
 
-            st.markdown("---")
+            # st.markdown("---")
 
         if st.button("Settle", key="settle", width='stretch', type="primary"):
             if settle_order(list(orders.keys()), balance_due):
