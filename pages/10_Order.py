@@ -177,6 +177,8 @@ def create_order():
 
         conn.commit()
         st.session_state.cart = [] # Clear internal cart
+        st.session_state.provided_name = ''
+        st.session_state.note = ''        
         sync_live_cart() # Flush the CFD display table
         return True
     except Exception as e:
@@ -209,7 +211,7 @@ def show_modifier_dialog():
             group_desc = group_data['group_description'] or "Modifiers"
             modifiers  = group_data['modifiers']
 
-            with st.expander(f"**{group_desc}**", expanded=True):
+            with st.expander(f"**{group_desc}**", expanded=False):
                 for modifier in modifiers:
                     mod_price = f" (+{format_price(modifier['price'])})" if modifier['price'] > 0 else ""
                     st.checkbox(
@@ -289,8 +291,6 @@ def show_order_page():
 
         if st.button("Checkout", type="primary", width='stretch', disabled=(not st.session_state.cart)):
             if create_order():
-                st.session_state.provided_name = ''
-                st.session_state.note = ''
                 st.success("Order created!")
                 st.switch_page("pages/12_Checkout.py")
 
