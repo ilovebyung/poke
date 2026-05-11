@@ -2,6 +2,7 @@ import sqlite3
 import streamlit as st
 import pandas as pd
 from datetime import date, datetime
+import os
 
 # Adapter: Python date → ISO 8601 string
 def adapt_date_iso(val):
@@ -16,8 +17,14 @@ sqlite3.register_adapter(date, adapt_date_iso)
 sqlite3.register_converter("date", convert_date)
 
 # Connect with type detection enabled
+# def get_db_connection():
+#     conn = sqlite3.connect('~/.local/share/pos/pos.database', detect_types=sqlite3.PARSE_DECLTYPES)
+#     conn.row_factory = sqlite3.Row
+#     conn.execute('PRAGMA journal_mode=WAL;')
+#     return conn
 def get_db_connection():
-    conn = sqlite3.connect('pos.database', detect_types=sqlite3.PARSE_DECLTYPES)
+    db_path = os.path.expanduser("~/.local/share/pos/pos.database")
+    conn = sqlite3.connect(db_path, detect_types=sqlite3.PARSE_DECLTYPES)
     conn.row_factory = sqlite3.Row
     conn.execute('PRAGMA journal_mode=WAL;')
     return conn

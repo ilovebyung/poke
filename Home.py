@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import streamlit_authenticator 
 import yaml
@@ -12,8 +13,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed") # 👈 collapses sidebar by default
 st.title("🏠 Welcome to QSR Home ")
 
+path = os.path.expanduser("~/.local/share/pos/credentials.yaml")
+
 # Load configuration first to get user role
-with open('.streamlit/credentials.yaml') as file:
+with open(path) as file:
     config = yaml.load(file, Loader=SafeLoader)
 
 # Initialize authenticator
